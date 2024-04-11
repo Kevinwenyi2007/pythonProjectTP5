@@ -274,7 +274,7 @@ class MyGame(arcade.Window):
            self.reset_round()
            self.game_state = GameState.ROUND_ACTIVE
        elif self.game_state == GameState.GAME_OVER:
-           self.game_state = GameState.ROUND_ACTIVE
+           self.game_state = GameState.NOT_STARTED
            self.setup()
 
    def reset_round(self):
