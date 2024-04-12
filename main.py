@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
        self.computer_attack_type = None
        self.player_attack_chosen = False
        self.player_won_round = None
-       self.draw_round = print('les deux ont eu 0 points')
+       self.draw_round = False
 
 
 
@@ -117,6 +117,7 @@ class MyGame(arcade.Window):
        pass
 
    def on_draw(self):
+       arcade.start_render()
        if self.game_state == game_state.GameState.NOT_STARTED:
            arcade.draw_text('appuyer sur espace pour commencer le jeu',
                             0,
@@ -151,6 +152,34 @@ class MyGame(arcade.Window):
 
 
        if self.game_state == game_state.GameState.ROUND_DONE:
+           computer_attack = AttackAnimation(self.computer_attack_type)
+
+           computer_attack.center_x = 1000
+           computer_attack.center_y = 70
+           computer_attack.draw()
+
+           arcade.draw_text(self.computer_score,
+                            0,
+                            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 7,
+                            arcade.color.BLACK_BEAN,
+                            30,
+                            width=SCREEN_WIDTH,
+                            align="right")
+
+           player_attack = AttackAnimation(self.player_attack_type)
+
+           player_attack.center_x = 40
+           player_attack.center_y = 70
+           player_attack.draw()
+
+           arcade.draw_text(self.player_score,
+                            0,
+                            SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 6,
+                            arcade.color.BLACK_BEAN,
+                            30,
+                            width=SCREEN_WIDTH,
+                            align="left")
+
            if self.player_won_round == True:
                 arcade.draw_text('vous avez gagne la ronde! appuyer sur espace pour recommencer',
                             0,
@@ -228,6 +257,7 @@ class MyGame(arcade.Window):
 
    def on_update(self, delta_time):
         if self.game_state == GameState.ROUND_ACTIVE and self.player_attack_chosen == True:
+
             pc_attack = random.randint(0, 2)
             if pc_attack == 0:
                 self.computer_attack_type = AttackType.ROCK
@@ -239,18 +269,10 @@ class MyGame(arcade.Window):
             elif pc_attack == 1:
                 self.computer_attack_type = AttackType.PAPER
 
-                paper = AttackAnimation(AttackType.PAPER)
-                paper.center_x = 1000
-                paper.center_y = 70
-                paper.draw()
 
             else:
                 self.computer_attack_type = AttackType.SCISSORS
 
-                scissors = AttackAnimation(AttackType.SCISSORS)
-                scissors.center_x = 1000
-                scissors.center_y = 100
-                scissors.draw()
             self.validate_victory()
             self.game_state = GameState.ROUND_DONE
             if self.player_won_round == True:
@@ -260,7 +282,7 @@ class MyGame(arcade.Window):
                 self.computer_score += 1
                 self.game_state = GameState.ROUND_DONE
             if self.player_score == 3 or self.computer_score == 3:
-                self.game_state = GameState.GAME_over
+                self.game_state = GameState.GAME_OVER
 
        #vérifier si le jeu est actif (ROUND_ACTIVE) et continuer l'animation des attaques
        #si le joueur a choisi une attaque, générer une attaque de l'ordinateur et valider la victoire
